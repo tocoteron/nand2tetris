@@ -1,5 +1,13 @@
 # Nand2Tetris
 
+## Usage
+
+### Run Hardware Simulator
+
+```
+sh ./tools/HardwareSimulator.sh
+```
+
 ## References
 
 - Book(EN): https://mitpress.mit.edu/books/elements-computing-systems
