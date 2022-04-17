@@ -8,6 +8,18 @@
 sh ./tools/HardwareSimulator.sh
 ```
 
+### Run CPU Emulator
+
+```
+sh ./tools/CPUEmulator.sh
+```
+
+### Assemble
+
+```
+sh ./tools/Assembler.sh <path_to_asm>
+```
+
 ## References
 
 - Book(EN): https://mitpress.mit.edu/books/elements-computing-systems
