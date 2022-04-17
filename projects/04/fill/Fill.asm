@@ -11,4 +11,40 @@
 // "white" in every pixel;
 // the screen should remain fully clear as long as no key is pressed.
 
-// Put your code here.
+(LOOP)
+    @color
+    M=0
+    @KBD
+    D=M
+    @DRAW
+    D;JEQ
+(BLACK)
+    @color
+    D=M
+    D=!D
+    M=D
+(DRAW)
+    @SCREEN
+    D=A
+    @cur
+    M=D
+(DRAW_LOOP)
+    // if cur >= 16384 + 8192 then break
+    @cur
+    D=M
+    @24576
+    D=D-A
+    @LOOP
+    D;JGE
+    // Draw color
+    @color
+    D=M
+    @cur
+    A=M
+    M=D
+    // Move cursor
+    @cur
+    M=M+1
+    // Loop
+    @DRAW_LOOP
+    0;JMP
