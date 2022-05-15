@@ -84,12 +84,14 @@ pub fn parse_program(program: &Vec<String>) -> Program {
 }
 
 fn clean_line(line: &String) -> String {
-    line.trim().to_string()
+    let mut cleaned_line = line.clone();
+    let comment_offset = line.find("//").unwrap_or(cleaned_line.len());
+    cleaned_line.drain(comment_offset..);
+    cleaned_line.trim().to_string()
 }
 
 fn valid_line(line: &String) -> bool {
-    let trimmed_line = line.trim();
-    !(trimmed_line.is_empty() || trimmed_line.starts_with("//"))
+    !line.is_empty()
 }
 
 fn parse_instruction(line: &String) -> Instruction {
