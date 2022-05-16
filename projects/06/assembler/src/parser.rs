@@ -1,3 +1,5 @@
+use crate::symbol::SymbolTable;
+
 pub type Program = Vec<Instruction>;
 
 #[derive(Debug)]
@@ -74,12 +76,12 @@ pub enum BInstructionJump {
     JMP,
 }
 
-pub fn parse_program(program: &Vec<String>) -> Program {
+pub fn parse_program(program: &Vec<String>, symbol_table: &SymbolTable) -> Program {
     program
         .iter()
         .map(clean_line)
         .filter(valid_line)
-        .map(|line| parse_instruction(&line))
+        .map(|line| parse_instruction(&line, symbol_table))
         .collect()
 }
 
@@ -91,21 +93,29 @@ fn clean_line(line: &String) -> String {
 }
 
 fn valid_line(line: &String) -> bool {
-    !line.is_empty()
+    let is_empty = line.is_empty();
+    let is_label = line.starts_with("(") && line.ends_with(")");
+    !(is_empty || is_label)
 }
 
-fn parse_instruction(line: &String) -> Instruction {
+fn parse_instruction(line: &String, symbol_table: &SymbolTable) -> Instruction {
     if line.starts_with("@") {
-        Instruction::AInstruction(parse_a_instruction(line))
+        Instruction::AInstruction(parse_a_instruction(line, symbol_table))
     } else {
         Instruction::BInstruction(parse_b_instruction(line))
     }
 }
 
-fn parse_a_instruction(line: &String) -> AInstruction {
+fn parse_a_instruction(line: &String, symbol_table: &SymbolTable) -> AInstruction {
     let mut cloned = line.clone();
-    cloned.remove(0);
-    let value = cloned.parse::<u16>().unwrap();
+    let target = cloned.drain(1..).collect::<String>();
+    let value = match target.parse::<u16>() {
+        Ok(val) => val,
+        Err(_) => match symbol_table.get(&target) {
+            Some(val) => *val,
+            None => panic!("Variable not found {}", target),
+        },
+    };
     AInstruction { value: value }
 }
 

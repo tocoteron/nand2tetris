@@ -1,3 +1,6 @@
+mod symbol;
+use symbol::make_symbol_table;
+
 mod parser;
 use parser::parse_program;
 
@@ -8,7 +11,8 @@ use std::io::{self, BufRead, Error};
 
 fn main() -> io::Result<()> {
     let program = read_program().unwrap();
-    let ast = parse_program(&program);
+    let symbol_table = make_symbol_table(&program);
+    let ast = parse_program(&program, &symbol_table);
     let code = generate_code(&ast);
 
     write_code(code);
